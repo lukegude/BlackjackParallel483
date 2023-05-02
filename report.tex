@@ -1,0 +1,61 @@
+\documentclass[12pt]{article}
+
+
+\begin{document}
+% Write a title page
+\begin{titlepage}
+\begin{center}
+    \Large \textbf{Evaluating Monte Carlo Simulations for Blackjack with Parallel Computing}\\[1.5cm]
+    \large Luke Gude\\Department of Computer Science and Electrical Engineering\\University of Maryland, Baltimore County\\[1.5cm]
+\vfill
+{\large \today}
+\end{center}
+\end{titlepage}
+
+\begin{abstract}
+This paper explores the performance of parallelized Monte Carlo simulations for evaluating blackjack strategies. The primary goal of this study is to investigate the effectiveness of different parallelization libraries, specifically OpenMP and MPI, in improving the performance of Monte Carlo simulations for this problem. A sequential Monte Carlo simulation of blackjack is implemented and compared against parallel versions using both OpenMP and MPI. Results show that parallelization can significantly improve the speed of simulations, allowing for more accurate and efficient analysis of different blackjack strategies. The choice of parallelization library is also discussed, with OpenMP being a suitable choice for shared-memory parallelism and MPI for distributed-memory parallelism.
+
+\textbf{Keywords:} Monte Carlo simulation, blackjack, parallelization, OpenMP, MPI
+\end{abstract}
+
+\section{Background}
+
+\subsection{Overview of Blackjack and Its Rules}
+Blackjack is a popular card game played in casinos worldwide. The objective of the game is for the player to achieve a higher card value than the dealer without exceeding a total value of 21. Each card has a value, with number cards representing their face value, face cards being worth 10 points, and aces being worth either 1 or 11 points, depending on the player's choice.
+
+A game of blackjack starts with the dealer dealing two cards to each player and two cards to themselves, with one card face up and one face down. Players can then choose to either "hit" (request additional cards) or "stand" (keep their current cards) in an attempt to reach a total value of 21 or as close to it as possible without exceeding it. The dealer must follow specific rules, such as hitting until they reach a total value of 17 or higher, and standing on any total value of 17 or higher.
+\newline
+\subsection{Existing Methods for Computing Optimal Blackjack Strategy}
+There are several methods for computing the optimal blackjack strategy. One common approach is using lookup tables, where players can reference the recommended action (hit or stand) based on their current hand value and the dealer's upcard. Another method is using decision trees, which outline a series of decisions for each possible combination of cards for the player and dealer. These strategies are typically based on the probability of winning or maximizing the expected return.
+
+\subsection{Limitations and Advantages of a Parallel Approach}
+The existing methods for computing optimal blackjack strategies have some limitations. One limitation is that these methods are static and do not account for changes in the game, such as varying rules or different card counting techniques. Another limitation is that these methods can be computationally expensive, especially for large-scale simulations.
+
+A parallel approach has the potential to overcome some of these limitations. By leveraging parallelization, it is possible to significantly speed up the computation time of Monte Carlo simulations, allowing for more accurate and efficient analysis of different blackjack strategies. Furthermore, a parallel approach can be easily adapted to account for changes in the game rules or card counting techniques, making it a more flexible and dynamic method for evaluating blackjack strategies.
+
+\newpage
+\section{Proposed Methodology}
+
+\subsection{Parallel Algorithm for Computing Optimal Blackjack Strategy}
+In this study, we propose a parallel algorithm for computing the optimal blackjack strategy using the OpenMP library. The algorithm employs Monte Carlo simulations to evaluate the effectiveness of different strategies under various game conditions. By running a large number of simulations, the algorithm can estimate the probability of winning for each possible action (hit or stand) at each game state.
+
+The parallel algorithm is designed to take advantage of the multiple cores available in modern processors. We utilize OpenMP's parallel for loop construct to distribute the iterations of the Monte Carlo simulations across multiple threads, each running on a separate core. This allows the algorithm to run multiple simulations simultaneously, significantly speeding up the computation time.
+
+\subsection{Leveraging Parallel Processing for Speedup}
+The parallel processing capabilities of OpenMP are leveraged to speed up the computation of the optimal blackjack strategy. The Monte Carlo simulations consist of a large number of independent trials, making it an embarrassingly parallel problem. This means that the parallelization overhead is minimal, and the speedup is expected to be close to linear with the number of cores used.
+
+By using OpenMP's parallel for loop construct, we ensure that each thread is assigned a roughly equal number of iterations of the Monte Carlo simulations. This load balancing helps maximize the parallel performance by ensuring that all available cores are utilized efficiently.
+
+\subsection{Optimization Techniques for Minimizing Communication Overhead and Maximizing Parallel Performance}
+To minimize communication overhead and maximize parallel performance, we apply several optimization techniques in our parallel algorithm:
+
+1. \textbf{Reducing false sharing:} False sharing occurs when multiple threads access different variables that reside in the same cache line, leading to unnecessary cache invalidations and performance degradation. By carefully aligning the data structures used in the algorithm and using OpenMP's thread-private variables, we can minimize false sharing and improve parallel performance.
+
+2. \textbf{Loop scheduling:} OpenMP provides several loop scheduling options, such as static, dynamic, and guided scheduling. We experiment with different scheduling options to find the best balance between load balancing and communication overhead, ultimately choosing the one that provides the best performance for our specific problem.
+
+3. \textbf{Nested parallelism:} In some cases, it might be beneficial to utilize nested parallelism, where parallel regions are further subdivided into smaller parallel tasks. This can help improve load balancing and better utilize the available cores. However, nested parallelism can also increase communication overhead and synchronization costs, so it must be applied judiciously.
+
+By employing these optimization techniques, we aim to minimize communication overhead and maximize parallel performance, ensuring efficient use of the available computational resources.
+
+
+\end{document}
