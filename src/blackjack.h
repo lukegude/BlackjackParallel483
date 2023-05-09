@@ -27,36 +27,25 @@ typedef struct {
 } Deck;
 
 typedef enum {
-    HIT, STAND, DOUBLE_DOWN, SPLIT
+    HIT, STAND, DOUBLE_DOWN, SPLIT, ACTION
 } Action;
+
+typedef struct Node {
+    Action type;
+    int value;
+    struct Node* left;
+    struct Node* right;
+} Node;
 
 typedef Action (*StrategyFunc)(int player_total, int player_aces, int dealer_upcard_value);
 
 
+
 Action basic_strategy(int player_total, int player_aces, int dealer_upcard_value);
 
-Action lookup_table[NUM_HANDS][NUM_UPCARDS];
+Action aggressive_strategy(int player_total, int player_aces, int dealer_upcard_value);
 
-void generate_lookup_table() {
-    #pragma omp parallel for
-    for (int player_hand = 4; player_hand <= 20; ++player_hand) {
-        for (int dealer_upcard = 2; dealer_upcard <= 11; ++dealer_upcard) {
-            // Simulate or use a predefined rule to determine the best action
-            // for each combination of player_hand and dealer_upcard.
-            // This example uses a simple rule for illustration purposes.
-            if (player_hand <= 11) {
-                lookup_table[player_hand - 4][dealer_upcard - 2] = HIT;
-            } else if (player_hand >= 17) {
-                lookup_table[player_hand - 4][dealer_upcard - 2] = STAND;
-            } else if (dealer_upcard <= 3) {
-                lookup_table[player_hand - 4][dealer_upcard - 2] = STAND;
-            } else {
-                lookup_table[player_hand - 4][dealer_upcard - 2] = HIT;
-            }
-        }
-    }
-}
-
+Action conservative_strategy(int player_total, int player_aces, int dealer_upcard_value);
 
 int play_blackjack_strategy(StrategyFunc strategy);
 
@@ -100,6 +89,34 @@ Action basic_strategy(int player_total, int player_aces, int dealer_upcard_value
 
     return HIT;
 }
+
+
+Action aggressive_strategy(int player_total, int player_aces, int dealer_upcard_value) {
+    if (player_total <= 11) {
+        return HIT;
+    } else if (player_total <= 15) {
+        return HIT;
+    } else if (player_total <= 18 && dealer_upcard_value >= 7) {
+        return HIT;
+    } else {
+        return STAND;
+    }
+}
+
+Action conservative_strategy(int player_total, int player_aces, int dealer_upcard_value) {
+    if (player_total <= 11) {
+        return HIT;
+    } else if (player_total <= 15 && dealer_upcard_value >= 7) {
+        return HIT;
+    } else if (player_total <= 15 && dealer_upcard_value <= 6) {
+        return STAND;
+    } else if (player_total >= 16) {
+        return STAND;
+    } else {
+        return HIT;
+    }
+}
+
 
 
 int card_value(Card card) {
@@ -147,7 +164,6 @@ int play_blackjack_strategy(StrategyFunc strategy) {
     // Player's turn
     while (player_total < 21) {
         Action action = strategy(player_total, player_aces, card_value(dealer_cards[1]));
-        //Action action = lookup_table[player_total - 4][card_value(dealer_cards[1]) - 2];
 
         if (action == HIT) {
             Card player_card = draw_card(&deck);

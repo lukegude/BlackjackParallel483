@@ -6,7 +6,7 @@ LDFLAGS = -L/usr/local/opt/llvm/lib
 
 all: mc_p mc_s
 mc_p:
-	$(CC) -o mc_p mc_p.c $(CPPFLAGS) $(LDFLAGS) -lm
+	$(CC) -o mc_p mc_p.c $(CPPFLAGS) $(LDFLAGS)
 
 mc_s:
 	gcc -o mc_s mc_s.c
