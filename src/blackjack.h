@@ -3,8 +3,10 @@
 #include <time.h>
 
 #define NUM_CARDS 52
+#define NUM_HANDS 32
 #define NUM_SUITS 4
 #define NUM_RANKS 13
+#define NUM_UPCARDS 11
 
 typedef enum {
     CLUBS, DIAMONDS, HEARTS, SPADES
@@ -25,13 +27,36 @@ typedef struct {
 } Deck;
 
 typedef enum {
-    HIT, STAND
+    HIT, STAND, DOUBLE_DOWN, SPLIT
 } Action;
 
 typedef Action (*StrategyFunc)(int player_total, int player_aces, int dealer_upcard_value);
 
 
 Action basic_strategy(int player_total, int player_aces, int dealer_upcard_value);
+
+Action lookup_table[NUM_HANDS][NUM_UPCARDS];
+
+void generate_lookup_table() {
+    #pragma omp parallel for
+    for (int player_hand = 4; player_hand <= 20; ++player_hand) {
+        for (int dealer_upcard = 2; dealer_upcard <= 11; ++dealer_upcard) {
+            // Simulate or use a predefined rule to determine the best action
+            // for each combination of player_hand and dealer_upcard.
+            // This example uses a simple rule for illustration purposes.
+            if (player_hand <= 11) {
+                lookup_table[player_hand - 4][dealer_upcard - 2] = HIT;
+            } else if (player_hand >= 17) {
+                lookup_table[player_hand - 4][dealer_upcard - 2] = STAND;
+            } else if (dealer_upcard <= 3) {
+                lookup_table[player_hand - 4][dealer_upcard - 2] = STAND;
+            } else {
+                lookup_table[player_hand - 4][dealer_upcard - 2] = HIT;
+            }
+        }
+    }
+}
+
 
 int play_blackjack_strategy(StrategyFunc strategy);
 
@@ -122,6 +147,7 @@ int play_blackjack_strategy(StrategyFunc strategy) {
     // Player's turn
     while (player_total < 21) {
         Action action = strategy(player_total, player_aces, card_value(dealer_cards[1]));
+        //Action action = lookup_table[player_total - 4][card_value(dealer_cards[1]) - 2];
 
         if (action == HIT) {
             Card player_card = draw_card(&deck);

@@ -13,7 +13,22 @@ mc_s:
 
 compare:
 	./penmp 1000000
+	./mc_s  1000000
+
+
+times_p:
+	./penmp 1000
+	./penmp 10000
+	./penmp 100000
+	./penmp 1000000
+	./penmp 10000000
+
+times_s:
+	./mc_s 1000
+	./mc_s 10000
+	./mc_s 100000
 	./mc_s 1000000
+	./mc_s 10000000
 
 clean:
 	rm -f mc_p mc_s
