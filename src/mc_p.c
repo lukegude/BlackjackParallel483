@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     {
         omp_set_num_threads(atoi(argv[2]));
     }
-    // run_full_simulation(atoi(argv[1]));
+    //run_full_simulation(atoi(argv[1]));
     FILE *fp = fopen("mc_p.txt", "a");
     fprintf(fp, "%f %d %d\n", thread_comparison(atoi(argv[1])), atoi(argv[1]), atoi(argv[2]));
     fclose(fp);
